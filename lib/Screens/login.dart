@@ -18,10 +18,8 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
-  String nama;
-  String idUser;
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-  Future<LoginModels> postLogin(String email, String password) async {
+  Future postLogin(String email, String password) async {
     var dio = Dio();
     String baseurl = url;
     Map<String, dynamic> data = {'email': email, 'password': password};
@@ -128,11 +126,11 @@ class LoginState extends State<Login> {
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        const Register()));
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  const Register()),
+                                        );
                                       },
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w600,
@@ -156,8 +154,8 @@ class LoginState extends State<Login> {
                                             if (value != null)
                                               {
                                                 setState(() {
-                                                  idUser = value.data.iduser;
-                                                  nama = value.data.nama;
+                                                  var id = value.data.iduser;
+                                                  var name = value.data.nama;
                                                   prefs.setString('email',
                                                       value.data.email);
                                                   prefs.setString(
@@ -165,14 +163,16 @@ class LoginState extends State<Login> {
                                                   prefs.setString(
                                                       'id', value.data.iduser);
                                                   Navigator.pushReplacement(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (BuildContext
-                                                                  context) =>
-                                                              MainScreens(
-                                                                nama: nama,
-                                                                idUser: idUser,
-                                                              )));
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          MainScreens(
+                                                        nama: name,
+                                                        idUser: id,
+                                                      ),
+                                                    ),
+                                                  );
                                                 })
                                               }
                                             else if (value == null)

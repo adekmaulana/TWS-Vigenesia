@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vigenesia/Models/motivasi_model.dart';
-import 'edit_page.dart';
+import 'package:vigenesia/Screens/add_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -25,23 +25,6 @@ class MainScreensState extends State<MainScreens> {
   var dio = Dio();
   List<MotivasiModel> ass = [];
   TextEditingController titleController = TextEditingController();
-
-  Future sendMotivasi(String isi) async {
-    dynamic body = {'isi_motivasi': isi, 'iduser': widget.idUser};
-    try {
-      final response = await dio.post(
-        '$baseurl/api/dev/POSTmotivasi',
-        data: body,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        ),
-      );
-      print('Respon -> ${response.data} + ${response.statusCode}');
-      return response;
-    } catch (e) {
-      print('Error di -> $e');
-    }
-  }
 
   List<MotivasiModel> listproduk = [];
   Future<List<MotivasiModel>> getData() async {
@@ -86,7 +69,7 @@ class MainScreensState extends State<MainScreens> {
     }
   }
 
-  Future<void> _getData() async {
+  Future<CircularProgressIndicator> _getData() async {
     setState(() {
       getData().then((_) => listproduk.clear());
     });
@@ -101,7 +84,6 @@ class MainScreensState extends State<MainScreens> {
     }
   }
 
-  TextEditingController isiController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -116,6 +98,9 @@ class MainScreensState extends State<MainScreens> {
 
   @override
   Widget build(BuildContext context) {
+    String firstName = widget.nama.split(' ')[0];
+    String secondName =
+        widget.nama.split(' ').length > 1 ? widget.nama.split(' ')[1] : null;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -123,6 +108,37 @@ class MainScreensState extends State<MainScreens> {
           statusBarIconBrightness: Brightness.dark,
         ),
         elevation: 0,
+        title: Row(
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.only(right: 30.0),
+              child: CircleAvatar(
+                radius: 19.0,
+                child: Text(
+                  secondName != null
+                      ? firstName[0] + secondName[0]
+                      : firstName[0],
+                ),
+              ),
+            ),
+            const Text(
+              "Home",
+              style: TextStyle(color: Colors.black),
+            )
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Tambah Motivasi',
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AddPage(userid: widget.idUser),
+            ),
+          );
+        },
       ),
       body: SingleChildScrollView(
         // <-- Berfungsi Untuk Bisa Scroll
@@ -154,45 +170,17 @@ class MainScreensState extends State<MainScreens> {
                               prefs.remove('id');
                               Navigator.pop(context);
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const Login()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const Login(),
+                                ),
+                              );
                             });
-                          })
+                          }),
                     ],
                   ),
                   const SizedBox(height: 20), // <-- Kasih Jarak Tinggi : 50px
-                  FormBuilderTextField(
-                    controller: isiController,
-                    name: 'isiMotivasi',
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          await sendMotivasi(
-                            isiController.text,
-                          ).then((value) => {
-                                if (value != null)
-                                  {
-                                    Flushbar(
-                                      message: 'Berhasil Submit',
-                                      duration: const Duration(seconds: 2),
-                                      backgroundColor: Colors.greenAccent,
-                                      flushbarPosition: FlushbarPosition.TOP,
-                                    ).show(context)
-                                  }
-                              });
-                          _getData();
-                          print('Sukses');
-                        },
-                        child: const Text('Submit')),
-                  ),
                   TextButton(
                     child: const Icon(Icons.refresh),
                     onPressed: () {
@@ -249,24 +237,6 @@ class MainScreensState extends State<MainScreens> {
                                                   children: [
                                                 Text(item.isiMotivasi),
                                                 Row(children: [
-                                                  TextButton(
-                                                    child: const Icon(
-                                                        Icons.settings),
-                                                    onPressed: () {
-                                                      // String id;
-                                                      // String isiMotivasi;
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (BuildContext
-                                                                    context) =>
-                                                                EditPage(
-                                                                    id: item.id,
-                                                                    isiMotivasi:
-                                                                        item.isiMotivasi),
-                                                          ));
-                                                    },
-                                                  ),
                                                   TextButton(
                                                     child: const Icon(
                                                         Icons.delete),

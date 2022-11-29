@@ -16,9 +16,8 @@ Future<void> main() async {
   var id = prefs.getString('id');
   runApp(
     MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: email == null
-            ? const Login()
-            : MainScreens(nama: nama, idUser: id)),
+      debugShowCheckedModeBanner: false,
+      home: email == null ? const Login() : MainScreens(nama: nama, idUser: id),
+    ),
   );
 }
