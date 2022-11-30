@@ -4,40 +4,37 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:dio/dio.dart';
 import 'package:vigenesia/Constant/const.dart';
 
-class AddPage extends StatefulWidget {
+class EditPage extends StatefulWidget {
   final String userid;
-  const AddPage({Key key, this.userid}) : super(key: key);
+  final String idMotivasi;
+  const EditPage({Key key, this.userid, this.idMotivasi}) : super(key: key);
   @override
-  AddPageState createState() => AddPageState();
+  EditPageState createState() => EditPageState();
 }
 
-class AddPageState extends State<AddPage> {
+class EditPageState extends State<EditPage> {
   String baseurl = url;
   var dio = Dio();
   bool _visible = false;
   String _motivasi;
-  TextEditingController motivasiController = TextEditingController();
+  TextEditingController editController = TextEditingController();
 
   @override
   void dispose() {
-    motivasiController.dispose();
+    editController.dispose();
     super.dispose();
   }
 
-  Future sendMotivasi(String motivasi) async {
-    dynamic body = {'isi_motivasi': motivasi, 'iduser': widget.userid};
-    try {
-      final response = await dio.post(
-        '$baseurl/api/dev/POSTmotivasi',
-        data: body,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        ),
-      );
-      return response;
-    } catch (e) {
-      print('Error di -> $e');
-    }
+  Future<dynamic> editPost(String isiMotivasi, String ids) async {
+    Map<String, dynamic> data = {'isi_motivasi': isiMotivasi, 'id': ids};
+    var response = await dio.put(
+      '$baseurl/api/dev/PUTmotivasi',
+      data: data,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+    );
+    return response.data;
   }
 
   @override
@@ -63,7 +60,7 @@ class AddPageState extends State<AddPage> {
           style: OutlinedButton.styleFrom(
             shape: const StadiumBorder(),
           ),
-          child: const Text('Tambah'),
+          child: const Text('Submit'),
           onPressed: () async {
             if (_motivasi == null) {
               return showDialog<void>(
@@ -92,15 +89,13 @@ class AddPageState extends State<AddPage> {
               );
             }
 
-            await sendMotivasi(
-              _motivasi,
-            ).then(
+            await editPost(_motivasi, widget.idMotivasi).then(
               (value) => {
                 Navigator.pop(context),
                 if (value != null)
                   {
                     Flushbar(
-                      message: 'Berhasil Submit',
+                      message: 'Berhasil Diubah',
                       duration: const Duration(seconds: 2),
                       backgroundColor: Colors.greenAccent,
                       flushbarPosition: FlushbarPosition.TOP,
@@ -126,7 +121,7 @@ class AddPageState extends State<AddPage> {
                   );
                 },
                 decoration: const InputDecoration(
-                  hintText: "Apa yang sedang terjadi?",
+                  hintText: "Apa yang ingin diubah?",
                   icon: Icon(Icons.circle_rounded),
                 ),
                 scrollPadding: const EdgeInsets.all(20.0),

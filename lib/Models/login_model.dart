@@ -13,12 +13,12 @@ class LoginModels {
 
   bool isActive;
   String message;
-  Data data;
+  DataUser data;
 
   factory LoginModels.fromJson(Map<String, dynamic> json) => LoginModels(
         isActive: json['is_active'],
         message: json['message'],
-        data: Data.fromJson(json['data']),
+        data: DataUser.fromJson(json['data']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -28,8 +28,8 @@ class LoginModels {
       };
 }
 
-class Data {
-  Data({
+class DataUser {
+  DataUser({
     this.iduser,
     this.nama,
     this.profesi,
@@ -51,7 +51,7 @@ class Data {
   DateTime tanggalInput;
   String modified;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory DataUser.fromJson(Map<String, dynamic> json) => DataUser(
         iduser: json['iduser'],
         nama: json['nama'],
         profesi: json['profesi'],

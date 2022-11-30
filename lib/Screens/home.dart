@@ -5,17 +5,25 @@ import 'package:vigenesia/Models/tweet.dart';
 import 'package:vigenesia/Constant/const.dart';
 import 'package:vigenesia/Models/motivasi_model.dart';
 
-class Profile extends StatefulWidget {
-  final String id;
-
-  const Profile({Key key, this.id}) : super(key: key);
+class Home extends StatefulWidget {
+  const Home({Key key}) : super(key: key);
   @override
-  ProfileState createState() => ProfileState();
+  HomeState createState() => HomeState();
 }
 
-class ProfileState extends State<Profile> {
+class HomeState extends State<Home> {
   final Dio dio = Dio();
   final String baseurl = url;
+
+  Future<List<MotivasiModel>> getDataMotivasi() async {
+    var response = await dio.get('$baseurl/api/get_motivasi');
+    if (response.statusCode == 200) {
+      var getUsersData = response.data as List;
+      return getUsersData.map((i) => MotivasiModel.fromJson(i)).toList();
+    } else {
+      throw Exception('Failed to load');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,43 +34,9 @@ class ProfileState extends State<Profile> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Colors.green,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage('assets/images/cover1.jpg'),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: SizedBox(
-                        child: CircleAvatar(
-                          radius: 19.0,
-                          child: Text("T"),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.5),
-                        child: Text(
-                          "Test",
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 19.0),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 20),
               FutureBuilder(
-                future: getDataMotivasiUser(widget.id),
+                future: getDataMotivasi(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<MotivasiModel>> snapshot) {
                   if (snapshot.hasData) {
