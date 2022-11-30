@@ -6,7 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:dio/dio.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key key}) : super(key: key);
+  const Register({Key? key}) : super(key: key);
   @override
   RegisterState createState() => RegisterState();
 }

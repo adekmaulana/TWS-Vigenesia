@@ -8,12 +8,11 @@ String motivasiModelToJson(List<MotivasiModel> data) =>
 
 class MotivasiModel {
   MotivasiModel({
-    this.id,
-    this.isiMotivasi,
-    this.idUser,
-    // this.idKategori,
-    this.tanggalInput,
-    this.tanggalUpdate,
+    required this.id,
+    required this.isiMotivasi,
+    required this.idUser,
+    required this.tanggalInput,
+    required this.tanggalUpdate,
   });
   String id;
   String isiMotivasi;

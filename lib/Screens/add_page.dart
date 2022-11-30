@@ -6,7 +6,7 @@ import 'package:vigenesia/Constant/const.dart';
 
 class AddPage extends StatefulWidget {
   final String userid;
-  const AddPage({Key key, this.userid}) : super(key: key);
+  const AddPage({Key? key, required this.userid}) : super(key: key);
   @override
   AddPageState createState() => AddPageState();
 }
@@ -15,7 +15,7 @@ class AddPageState extends State<AddPage> {
   String baseurl = url;
   var dio = Dio();
   bool _visible = false;
-  String _motivasi;
+  late String _motivasi;
   TextEditingController motivasiController = TextEditingController();
 
   @override
@@ -65,33 +65,6 @@ class AddPageState extends State<AddPage> {
           ),
           child: const Text('Tambah'),
           onPressed: () async {
-            if (_motivasi == null) {
-              return showDialog<void>(
-                context: context,
-                barrierDismissible: false, // user must tap button!
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Terdapat Kesalahan'),
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: const <Widget>[
-                          Text('Motivasi tidak bisa kosong.'),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text('OK'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-
             await sendMotivasi(
               _motivasi,
             ).then(
@@ -106,6 +79,7 @@ class AddPageState extends State<AddPage> {
                       flushbarPosition: FlushbarPosition.TOP,
                     ).show(context)
                   },
+                getDataMotivasi().then((_) => setState(() {}))
               },
             );
           },

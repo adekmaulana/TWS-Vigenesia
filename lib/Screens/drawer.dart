@@ -6,7 +6,11 @@ import 'login.dart';
 class NavDrawer extends StatelessWidget {
   final String displayName;
   final String fullName;
-  const NavDrawer({Key key, this.displayName, this.fullName}) : super(key: key);
+  const NavDrawer({
+    Key? key,
+    required this.displayName,
+    required this.fullName,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

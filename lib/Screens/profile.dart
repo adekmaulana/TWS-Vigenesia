@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:vigenesia/Models/login_model.dart';
 import 'package:vigenesia/Models/tweet.dart';
 
 import 'package:vigenesia/Constant/const.dart';
@@ -8,7 +9,7 @@ import 'package:vigenesia/Models/motivasi_model.dart';
 class Profile extends StatefulWidget {
   final String id;
 
-  const Profile({Key key, this.id}) : super(key: key);
+  const Profile({Key? key, required this.id}) : super(key: key);
   @override
   ProfileState createState() => ProfileState();
 }
@@ -35,14 +36,36 @@ class ProfileState extends State<Profile> {
                   ),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: SizedBox(
-                        child: CircleAvatar(
-                          radius: 19.0,
-                          child: Text("T"),
+                        child: FutureBuilder(
+                          future: getDataUser(widget.id),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<DataUser>> snapshot) {
+                            if (snapshot.hasData) {
+                              var item = snapshot.data![0];
+                              var name = item.nama;
+                              var subname = name.split(' ').length > 1
+                                  ? name.split(' ')[1][0]
+                                  : null;
+                              return CircleAvatar(
+                                radius: 19.0,
+                                child: Text(
+                                  subname != null
+                                      ? name.substring(0, 1) + subname
+                                      : name.substring(0, 1),
+                                ),
+                              );
+                            } else if (snapshot.hasData &&
+                                snapshot.data!.isEmpty) {
+                              return const Text('No Data');
+                            } else {
+                              return const CircularProgressIndicator();
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -50,10 +73,25 @@ class ProfileState extends State<Profile> {
                       alignment: Alignment.bottomLeft,
                       child: Padding(
                         padding: const EdgeInsets.all(8.5),
-                        child: Text(
-                          "Test",
-                          style: const TextStyle(
-                              color: Colors.black, fontSize: 19.0),
+                        child: FutureBuilder(
+                          future: getDataUser(widget.id),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<DataUser>> snapshot) {
+                            if (snapshot.hasData) {
+                              var item = snapshot.data![0];
+                              var name = item.nama;
+                              return Text(
+                                name,
+                                style: const TextStyle(
+                                    color: Colors.black, fontSize: 19.0),
+                              );
+                            } else if (snapshot.hasData &&
+                                snapshot.data!.isEmpty) {
+                              return const Text('No Data');
+                            } else {
+                              return const CircularProgressIndicator();
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -68,7 +106,7 @@ class ProfileState extends State<Profile> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        for (var item in snapshot.data)
+                        for (var item in snapshot.data!)
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: Tweet(
@@ -80,7 +118,7 @@ class ProfileState extends State<Profile> {
                           ),
                       ],
                     );
-                  } else if (snapshot.hasData && snapshot.data.isEmpty) {
+                  } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                     return const Text('No Data');
                   } else {
                     return const CircularProgressIndicator();

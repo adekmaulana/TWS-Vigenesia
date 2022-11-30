@@ -1,30 +1,24 @@
-import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vigenesia/Models/motivasi_model.dart';
 import 'package:vigenesia/Screens/add_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:vigenesia/Screens/drawer.dart';
 import 'package:vigenesia/Screens/home.dart';
 import 'package:vigenesia/Screens/profile.dart';
-import 'login.dart';
 import 'package:vigenesia/Constant/const.dart';
-import 'package:another_flushbar/flushbar.dart';
-import 'package:vigenesia/Models/tweet.dart';
 
 class MainScreens extends StatefulWidget {
   final String idUser;
   final String nama;
-  const MainScreens({Key key, this.nama, this.idUser}) : super(key: key);
+  const MainScreens({Key? key, required this.nama, required this.idUser})
+      : super(key: key);
   @override
   MainScreensState createState() => MainScreensState();
 }
 
 class MainScreensState extends State<MainScreens> {
   String baseurl = url;
-  String id;
+  late String id;
   var dio = Dio();
   TextEditingController titleController = TextEditingController();
 
@@ -53,15 +47,13 @@ class MainScreensState extends State<MainScreens> {
     getData();
   }
 
-  String trigger;
-  String triggeruser;
   int _selectedIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     String firstName = widget.nama.split(' ')[0];
-    String secondName =
+    String? secondName =
         widget.nama.split(' ').length > 1 ? widget.nama.split(' ')[1] : null;
     String displayName =
         secondName != null ? firstName[0] + secondName[0] : firstName[0];
@@ -86,7 +78,7 @@ class MainScreensState extends State<MainScreens> {
                 displayName,
                 style: const TextStyle(color: Colors.white, fontSize: 13.0),
               ),
-              onPressed: () => _scaffoldKey.currentState.openDrawer(),
+              onPressed: () => _scaffoldKey.currentState?.openDrawer(),
             ),
           ),
         ),
@@ -99,7 +91,7 @@ class MainScreensState extends State<MainScreens> {
         children: [
           _selectedIndex == 0 ? const Home() : Profile(id: widget.idUser),
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.all(21.0),
               child: FloatingActionButton(

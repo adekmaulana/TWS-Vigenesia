@@ -8,11 +8,10 @@ import 'main.dart';
 import 'registrasi.dart';
 import 'package:flutter/gestures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'dart:convert';
 import 'package:vigenesia/Models/login_model.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key key}) : super(key: key);
+  const Login({Key? key}) : super(key: key);
   @override
   LoginState createState() => LoginState();
 }

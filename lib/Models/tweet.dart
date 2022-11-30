@@ -12,8 +12,13 @@ class Tweet extends StatefulWidget {
   final String text;
   final DateTime date;
 
-  const Tweet({Key key, this.id, this.user, this.text, this.date})
-      : super(key: key);
+  const Tweet({
+    Key? key,
+    required this.id,
+    required this.user,
+    required this.text,
+    required this.date,
+  }) : super(key: key);
 
   @override
   State<Tweet> createState() => TweetState();
@@ -23,7 +28,7 @@ class TweetState extends State<Tweet> {
   final Dio dio = Dio();
   final String baseurl = url;
 
-  String currentUser;
+  late String? currentUser;
 
   @override
   void initState() {
@@ -75,14 +80,16 @@ class TweetState extends State<Tweet> {
           contentType: Headers.formUrlEncodedContentType,
         ),
       );
+      await getDataMotivasi();
       return response.data;
     } catch (e) {
       print('Error di -> $e');
     }
   }
 
-  void showPopupMenu(BuildContext context, TapDownDetails details) async {
-    await showMenu<String>(
+  Future<dynamic> showPopupMenu(
+      BuildContext context, TapDownDetails details) async {
+    showMenu<String>(
       context: context,
       position: RelativeRect.fromLTRB(
         details.globalPosition.dx,
@@ -102,12 +109,10 @@ class TweetState extends State<Tweet> {
       ],
       elevation: 8.0,
     ).then(
-      (String itemSelected) async {
-        if (itemSelected == null) return;
-
+      (String? itemSelected) async {
         if (itemSelected == "1") {
           if (currentUser != widget.user) {
-            return showDialog<void>(
+            return await showDialog<void>(
               context: context,
               barrierDismissible: false, // user must tap button!
               builder: (BuildContext context) {
@@ -132,7 +137,6 @@ class TweetState extends State<Tweet> {
               },
             );
           }
-          ;
 
           Navigator.push(
             context,
@@ -144,12 +148,8 @@ class TweetState extends State<Tweet> {
             ),
           );
         } else if (itemSelected == "2") {
-          await deletePost(widget.id); //bug
-          await getDataMotivasi();
-        } else {
-          return;
+          return await deletePost(widget.id).then((value) => setState(() {}));
         }
-        ;
       },
     );
   }
@@ -162,25 +162,31 @@ class TweetState extends State<Tweet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Row(
+            Stack(
               children: <Widget>[
-                Text(
-                  name,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(left: 5.0),
+                        child: Text(
+                          "@$id · ${widget.date.timeAgo(numericDates: false)}",
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(left: 5.0),
-                  child: Text(
-                    "@$id · ${widget.date.timeAgo(numericDates: false)}",
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width - 350),
+                  alignment: Alignment.centerRight,
                   child: GestureDetector(
                     child: const Icon(Icons.more_horiz_rounded),
                     onTapDown: (details) => showPopupMenu(context, details),
@@ -207,7 +213,7 @@ class TweetState extends State<Tweet> {
       future: getDataUser(widget.user),
       builder: (BuildContext context, AsyncSnapshot<List<DataUser>> snapshot) {
         if (snapshot.hasData && widget.text.isNotEmpty) {
-          var data = snapshot.data[0];
+          var data = snapshot.data![0];
           var name = data.nama;
           var subname =
               name.split(' ').length > 1 ? name.split(' ')[1][0] : null;

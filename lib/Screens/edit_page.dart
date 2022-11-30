@@ -7,7 +7,11 @@ import 'package:vigenesia/Constant/const.dart';
 class EditPage extends StatefulWidget {
   final String userid;
   final String idMotivasi;
-  const EditPage({Key key, this.userid, this.idMotivasi}) : super(key: key);
+  const EditPage({
+    Key? key,
+    required this.userid,
+    required this.idMotivasi,
+  }) : super(key: key);
   @override
   EditPageState createState() => EditPageState();
 }
@@ -16,7 +20,7 @@ class EditPageState extends State<EditPage> {
   String baseurl = url;
   var dio = Dio();
   bool _visible = false;
-  String _motivasi;
+  late String _motivasi;
   TextEditingController editController = TextEditingController();
 
   @override
@@ -62,33 +66,6 @@ class EditPageState extends State<EditPage> {
           ),
           child: const Text('Submit'),
           onPressed: () async {
-            if (_motivasi == null) {
-              return showDialog<void>(
-                context: context,
-                barrierDismissible: false, // user must tap button!
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Terdapat Kesalahan'),
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: const <Widget>[
-                          Text('Motivasi tidak bisa kosong.'),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text('OK'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            }
-
             await editPost(_motivasi, widget.idMotivasi).then(
               (value) => {
                 Navigator.pop(context),
@@ -101,6 +78,7 @@ class EditPageState extends State<EditPage> {
                       flushbarPosition: FlushbarPosition.TOP,
                     ).show(context)
                   },
+                getDataMotivasi().then((value) => setState(() {}))
               },
             );
           },

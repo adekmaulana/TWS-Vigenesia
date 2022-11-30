@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:vigenesia/Models/login_model.dart';
 import 'package:vigenesia/Models/motivasi_model.dart';
 
-String url = 'http://192.168.0.161/vigenesia';
+String url = 'http://vigenesia.org/';
 Dio dio = Dio();
 
 Future<List<MotivasiModel>> getDataMotivasi() async {

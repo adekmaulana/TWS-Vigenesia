@@ -11,13 +11,13 @@ Future<void> main() async {
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var email = prefs.getString('email');
-  var nama = prefs.getString('nama');
-  var id = prefs.getString('id');
+  var email = prefs.getString('email') ?? '';
+  var nama = prefs.getString('nama') ?? '';
+  var id = prefs.getString('id') ?? '';
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: email == null ? const Login() : MainScreens(nama: nama, idUser: id),
+      home: email == '' ? const Login() : MainScreens(nama: nama, idUser: id),
     ),
   );
 }

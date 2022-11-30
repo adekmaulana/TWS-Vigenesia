@@ -6,7 +6,7 @@ import 'package:vigenesia/Constant/const.dart';
 import 'package:vigenesia/Models/motivasi_model.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
   @override
   HomeState createState() => HomeState();
 }
@@ -42,7 +42,7 @@ class HomeState extends State<Home> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        for (var item in snapshot.data)
+                        for (var item in snapshot.data!)
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: Tweet(
@@ -54,7 +54,7 @@ class HomeState extends State<Home> {
                           ),
                       ],
                     );
-                  } else if (snapshot.hasData && snapshot.data.isEmpty) {
+                  } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                     return const Text('No Data');
                   } else {
                     return const CircularProgressIndicator();

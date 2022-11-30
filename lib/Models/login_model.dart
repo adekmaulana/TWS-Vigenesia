@@ -6,9 +6,9 @@ String loginModelsToJson(LoginModels data) => json.encode(data.toJson());
 
 class LoginModels {
   LoginModels({
-    this.isActive,
-    this.message,
-    this.data,
+    required this.isActive,
+    required this.message,
+    required this.data,
   });
 
   bool isActive;
@@ -30,15 +30,15 @@ class LoginModels {
 
 class DataUser {
   DataUser({
-    this.iduser,
-    this.nama,
-    this.profesi,
-    this.email,
-    this.password,
-    this.roleId,
-    this.isActive,
-    this.tanggalInput,
-    this.modified,
+    required this.iduser,
+    required this.nama,
+    required this.profesi,
+    required this.email,
+    required this.password,
+    required this.roleId,
+    required this.isActive,
+    required this.tanggalInput,
+    required this.modified,
   });
 
   String iduser;
