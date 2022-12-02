@@ -57,7 +57,7 @@ class HomeState extends State<Home> {
                   } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                     return const Text('No Data');
                   } else {
-                    return const CircularProgressIndicator();
+                    return const Center(child: CircularProgressIndicator());
                   }
                 },
               ),

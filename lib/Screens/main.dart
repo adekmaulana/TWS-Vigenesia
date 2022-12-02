@@ -22,13 +22,13 @@ class MainScreensState extends State<MainScreens> {
   var dio = Dio();
   TextEditingController titleController = TextEditingController();
 
-  Future<CircularProgressIndicator> getData() async {
+  Future<Widget> getData() async {
     setState(
       () {
         getDataMotivasi().then((_) => {});
       },
     );
-    return const CircularProgressIndicator();
+    return const Center(child: CircularProgressIndicator());
   }
 
   void _onItemTapped(int index) {
