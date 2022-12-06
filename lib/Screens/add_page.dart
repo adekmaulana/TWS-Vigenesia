@@ -13,7 +13,6 @@ class AddPage extends StatefulWidget {
 
 class AddPageState extends State<AddPage> {
   String baseurl = url;
-  var dio = Dio();
   bool _visible = false;
   late String _motivasi;
   TextEditingController motivasiController = TextEditingController();
@@ -79,7 +78,6 @@ class AddPageState extends State<AddPage> {
                       flushbarPosition: FlushbarPosition.TOP,
                     ).show(context)
                   },
-                getDataMotivasi().then((_) => setState(() {}))
               },
             );
           },

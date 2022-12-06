@@ -18,7 +18,6 @@ class EditPage extends StatefulWidget {
 
 class EditPageState extends State<EditPage> {
   String baseurl = url;
-  var dio = Dio();
   bool _visible = false;
   late String _motivasi;
   TextEditingController editController = TextEditingController();

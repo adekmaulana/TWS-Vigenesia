@@ -19,7 +19,6 @@ class Login extends StatefulWidget {
 class LoginState extends State<Login> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   Future postLogin(String email, String password) async {
-    var dio = Dio();
     String baseurl = url;
     Map<String, dynamic> data = {'email': email, 'password': password};
     try {

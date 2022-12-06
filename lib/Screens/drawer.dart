@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vigenesia/Screens/profile.dart';
 
 import 'login.dart';
 
@@ -84,6 +86,38 @@ class NavDrawer extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 19.5),
+            leading: const Icon(
+              CupertinoIcons.person,
+              size: 33.5,
+            ),
+            title: Padding(
+              padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width / 8.5,
+              ),
+              child: const Text(
+                'PROFILE',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            onTap: () {
+              SharedPreferences.getInstance().then(
+                (prefs) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => Profile(
+                        id: prefs.getString('id')!,
+                        fromPage: "home",
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),

@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:vigenesia/Models/tweet.dart';
 
@@ -12,11 +11,10 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final Dio dio = Dio();
   final String baseurl = url;
 
   Future<List<MotivasiModel>> getDataMotivasi() async {
-    var response = await dio.get('$baseurl/api/get_motivasi');
+    var response = await dio.get('$baseurl/api/Get_motivasi');
     if (response.statusCode == 200) {
       var getUsersData = response.data as List;
       return getUsersData.map((i) => MotivasiModel.fromJson(i)).toList();
@@ -50,6 +48,7 @@ class HomeState extends State<Home> {
                               user: item.idUser,
                               text: item.isiMotivasi,
                               date: item.tanggalInput,
+                              fromPage: "home",
                             ),
                           ),
                       ],

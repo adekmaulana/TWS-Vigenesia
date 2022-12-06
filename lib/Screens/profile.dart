@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vigenesia/Models/tweet.dart';
 
@@ -7,32 +7,52 @@ import 'package:vigenesia/Models/motivasi_model.dart';
 
 class Profile extends StatefulWidget {
   final String id;
+  final String fromPage;
 
-  const Profile({Key? key, required this.id}) : super(key: key);
+  const Profile({
+    Key? key,
+    required this.id,
+    required this.fromPage,
+  }) : super(key: key);
   @override
   ProfileState createState() => ProfileState();
 }
 
 class ProfileState extends State<Profile> {
-  final Dio dio = Dio();
   final String baseurl = url;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 19.0, right: 19.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Stack(
             children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(
+              const DrawerHeader(
+                decoration: BoxDecoration(
                   color: Colors.green,
                   image: DecorationImage(
                     fit: BoxFit.cover,
                     image: AssetImage('assets/images/cover1.jpg'),
                   ),
+                ),
+                child: null,
+              ),
+              SafeArea(
+                child: IconButton(
+                  icon: const Icon(
+                    CupertinoIcons.back,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height / 4.65,
                 ),
                 child: FutureBuilder(
                   future: getDataUser(widget.id),
@@ -43,34 +63,83 @@ class ProfileState extends State<Profile> {
                       var subname = name.split(' ').length > 1
                           ? name.split(' ')[1][0]
                           : null;
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: SizedBox(
-                              child: CircleAvatar(
-                                radius: 19.0,
-                                child: Text(
-                                  subname != null
-                                      ? name.substring(0, 1) + subname
-                                      : name.substring(0, 1),
+                      return Container(
+                        margin: const EdgeInsets.only(left: 11.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: SizedBox(
+                                child: CircleAvatar(
+                                  radius: 19.0,
+                                  child: Text(
+                                    subname != null
+                                        ? name.substring(0, 1) + subname
+                                        : name.substring(0, 1),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.5),
+                            Align(
+                              alignment: Alignment.bottomLeft,
                               child: Text(
                                 name,
                                 style: const TextStyle(
-                                    color: Colors.black, fontSize: 19.0),
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 19.0,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    '@${item.iduser}',
+                                    style: const TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 15.0,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5.0,
+                                ),
+                                const Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    '·',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 5.0,
+                                ),
+                                const Icon(
+                                  CupertinoIcons.briefcase,
+                                  color: Colors.black,
+                                ),
+                                const SizedBox(
+                                  width: 5.0,
+                                ),
+                                Text(
+                                  item.profesi,
+                                  style: const TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       );
                     } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                       return const Text('No Data');
@@ -79,9 +148,17 @@ class ProfileState extends State<Profile> {
                     }
                   },
                 ),
-              ),
-              const SizedBox(height: 20),
-              FutureBuilder(
+              )
+            ],
+          ),
+          const Divider(
+            height: 10.0,
+            thickness: 1.0,
+          ),
+          SingleChildScrollView(
+            child: Container(
+              margin: const EdgeInsets.only(left: 11.0),
+              child: FutureBuilder(
                 future: getDataMotivasiUser(widget.id),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<MotivasiModel>> snapshot) {
@@ -96,6 +173,7 @@ class ProfileState extends State<Profile> {
                               user: item.idUser,
                               text: item.isiMotivasi,
                               date: item.tanggalInput,
+                              fromPage: "profile",
                             ),
                           ),
                       ],
@@ -107,9 +185,9 @@ class ProfileState extends State<Profile> {
                   }
                 },
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

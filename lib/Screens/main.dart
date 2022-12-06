@@ -1,10 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:vigenesia/Screens/add_page.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:vigenesia/Screens/drawer.dart';
 import 'package:vigenesia/Screens/home.dart';
-import 'package:vigenesia/Screens/profile.dart';
 import 'package:vigenesia/Constant/const.dart';
 
 class MainScreens extends StatefulWidget {
@@ -19,24 +17,13 @@ class MainScreens extends StatefulWidget {
 class MainScreensState extends State<MainScreens> {
   String baseurl = url;
   late String id;
-  var dio = Dio();
   TextEditingController titleController = TextEditingController();
 
   Future<Widget> getData() async {
-    setState(
-      () {
-        getDataMotivasi().then((_) => {});
-      },
-    );
+    await getDataMotivasi().then((_) {
+      setState(() => {});
+    });
     return const Center(child: CircularProgressIndicator());
-  }
-
-  void _onItemTapped(int index) {
-    if (mounted) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
   }
 
   @override
@@ -47,7 +34,6 @@ class MainScreensState extends State<MainScreens> {
     getData();
   }
 
-  int _selectedIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -72,24 +58,25 @@ class MainScreensState extends State<MainScreens> {
         leading: Container(
           margin: const EdgeInsets.only(left: 19.0),
           child: CircleAvatar(
-            radius: 19.0,
             child: TextButton(
               child: Text(
                 displayName,
-                style: const TextStyle(color: Colors.white, fontSize: 13.0),
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
               ),
               onPressed: () => _scaffoldKey.currentState?.openDrawer(),
             ),
           ),
         ),
-        title: Text(
-          _selectedIndex == 0 ? 'Home' : 'Profile',
-          style: const TextStyle(color: Colors.black),
+        title: const Text(
+          'Home',
+          style: TextStyle(color: Colors.black),
         ),
       ),
       body: Stack(
         children: [
-          _selectedIndex == 0 ? const Home() : Profile(id: widget.idUser),
+          const Home(),
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -104,24 +91,10 @@ class MainScreensState extends State<MainScreens> {
                       builder: (BuildContext context) =>
                           AddPage(userid: widget.idUser),
                     ),
-                  );
+                  ).then((_) async => await getData());
                 },
               ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
           ),
         ],
       ),

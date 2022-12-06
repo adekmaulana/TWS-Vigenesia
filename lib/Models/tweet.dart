@@ -5,12 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vigenesia/Constant/const.dart';
 import 'package:vigenesia/Models/login_model.dart';
 import 'package:vigenesia/Screens/edit_page.dart';
+import 'package:vigenesia/Screens/profile.dart';
 
 class Tweet extends StatefulWidget {
   final String id;
   final String user;
   final String text;
   final DateTime date;
+  final String fromPage;
 
   const Tweet({
     Key? key,
@@ -18,6 +20,7 @@ class Tweet extends StatefulWidget {
     required this.user,
     required this.text,
     required this.date,
+    required this.fromPage,
   }) : super(key: key);
 
   @override
@@ -25,7 +28,6 @@ class Tweet extends StatefulWidget {
 }
 
 class TweetState extends State<Tweet> {
-  final Dio dio = Dio();
   final String baseurl = url;
 
   late String? currentUser;
@@ -215,8 +217,12 @@ class TweetState extends State<Tweet> {
         if (snapshot.hasData && widget.text.isNotEmpty) {
           var data = snapshot.data![0];
           var name = data.nama;
-          var subname =
-              name.split(' ').length > 1 ? name.split(' ')[1][0] : null;
+          String? subname;
+          try {
+            subname = name.split(' ')[1][0];
+          } catch (e) {
+            subname = null;
+          }
           return Padding(
             padding: const EdgeInsets.only(bottom: 30.0, right: 15.0),
             child: Row(
@@ -224,10 +230,28 @@ class TweetState extends State<Tweet> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 CircleAvatar(
-                  child: Text(
-                    subname != null
-                        ? data.nama.substring(0, 1) + subname
-                        : data.nama.substring(0, 1),
+                  radius: 19,
+                  child: TextButton(
+                    onPressed: () => {
+                      if (widget.fromPage != "profile")
+                        {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => Profile(
+                                id: widget.user,
+                                fromPage: "home",
+                              ),
+                            ),
+                          ),
+                        },
+                    },
+                    child: Text(
+                      subname != null
+                          ? data.nama.substring(0, 1) + subname
+                          : data.nama.substring(0, 1),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
                 _tweetContent(data.nama, data.iduser),

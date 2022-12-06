@@ -16,7 +16,6 @@ class RegisterState extends State<Register> {
 
   Future postRegister(
       String nama, String profesi, String email, String password) async {
-    var dio = Dio();
     dynamic data = {
       'nama': nama,
       'profesi': profesi,
@@ -125,17 +124,20 @@ class RegisterState extends State<Register> {
                               .then((value) => {
                                     if (value != null)
                                       {
-                                        setState(() {
-                                          Navigator.pop(context);
-                                          Flushbar(
-                                            message: 'Berhasil Registrasi',
-                                            duration:
-                                                const Duration(seconds: 2),
-                                            backgroundColor: Colors.greenAccent,
-                                            flushbarPosition:
-                                                FlushbarPosition.TOP,
-                                          ).show(context);
-                                        })
+                                        setState(
+                                          () {
+                                            Navigator.pop(context);
+                                            Flushbar(
+                                              message: 'Berhasil Registrasi',
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                              backgroundColor:
+                                                  Colors.greenAccent,
+                                              flushbarPosition:
+                                                  FlushbarPosition.TOP,
+                                            ).show(context);
+                                          },
+                                        )
                                       }
                                     else if (value == null)
                                       {
