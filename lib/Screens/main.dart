@@ -73,6 +73,7 @@ class MainScreensState extends State<MainScreens> {
           'Home',
           style: TextStyle(color: Colors.black),
         ),
+        centerTitle: true,
       ),
       body: Stack(
         children: [
