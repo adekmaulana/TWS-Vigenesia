@@ -28,21 +28,7 @@ class ProfileState extends State<Profile> {
         getDataMotivasiUser(widget.id).then(
           (_) async => {
             await Future.delayed(
-              const Duration(milliseconds: 500),
-            )
-          },
-        );
-      },
-    );
-  }
-
-  void _refreshMain() {
-    setState(
-      () {
-        getDataMotivasi().then(
-          (_) async => {
-            await Future.delayed(
-              const Duration(milliseconds: 500),
+              const Duration(milliseconds: 100),
             )
           },
         );
