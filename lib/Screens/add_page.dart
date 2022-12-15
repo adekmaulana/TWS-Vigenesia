@@ -17,6 +17,13 @@ class AddPageState extends State<AddPage> {
   late String _motivasi;
   TextEditingController motivasiController = TextEditingController();
 
+  Future<Widget> getData() async {
+    setState(() {
+      getDataMotivasi().then((_) => {});
+    });
+    return const CircularProgressIndicator();
+  }
+
   @override
   void dispose() {
     motivasiController.dispose();

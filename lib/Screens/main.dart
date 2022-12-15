@@ -20,10 +20,10 @@ class MainScreensState extends State<MainScreens> {
   TextEditingController titleController = TextEditingController();
 
   Future<Widget> getData() async {
-    await getDataMotivasi().then((_) {
-      setState(() => {});
+    setState(() {
+      getDataMotivasi().then((_) => {});
     });
-    return const Center(child: CircularProgressIndicator());
+    return const CircularProgressIndicator();
   }
 
   @override
@@ -92,7 +92,10 @@ class MainScreensState extends State<MainScreens> {
                       builder: (BuildContext context) =>
                           AddPage(userid: widget.idUser),
                     ),
-                  ).then((_) async => await getData());
+                  );
+                  setState(() {
+                    getDataMotivasi().then((value) => {});
+                  });
                 },
               ),
             ),

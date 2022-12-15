@@ -13,20 +13,10 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   final String baseurl = url;
 
-  Future<List<MotivasiModel>> getDataMotivasi() async {
-    var response = await dio.get('$baseurl/api/Get_motivasi');
-    if (response.statusCode == 200) {
-      var getUsersData = response.data as List;
-      return getUsersData.map((i) => MotivasiModel.fromJson(i)).toList();
-    } else {
-      throw Exception('Failed to load');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: SafeArea(
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(left: 19.0, right: 19.0),
           child: Column(

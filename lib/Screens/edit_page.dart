@@ -22,6 +22,13 @@ class EditPageState extends State<EditPage> {
   late String _motivasi;
   TextEditingController editController = TextEditingController();
 
+  Future<Widget> getData() async {
+    setState(() {
+      getDataMotivasi().then((_) => {});
+    });
+    return const CircularProgressIndicator();
+  }
+
   @override
   void dispose() {
     editController.dispose();
@@ -77,9 +84,9 @@ class EditPageState extends State<EditPage> {
                       flushbarPosition: FlushbarPosition.TOP,
                     ).show(context)
                   },
-                getDataMotivasi().then((value) => setState(() {}))
               },
             );
+            await getData();
           },
         ),
       ),

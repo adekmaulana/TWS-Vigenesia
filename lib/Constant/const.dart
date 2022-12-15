@@ -3,7 +3,7 @@ import 'package:vigenesia/Models/login_model.dart';
 import 'package:vigenesia/Models/motivasi_model.dart';
 
 String url = 'http://vigenesia.org/';
-Dio dio = Dio();
+final Dio dio = Dio();
 
 Future<List<MotivasiModel>> getDataMotivasi() async {
   var response = await dio.get('$url/api/get_motivasi');

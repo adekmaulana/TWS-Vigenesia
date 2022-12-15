@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +33,13 @@ class TweetState extends State<Tweet> {
 
   late String? currentUser;
 
+  Future<Widget> getData() async {
+    setState(() {
+      getDataMotivasi().then((_) => {});
+    });
+    return const CircularProgressIndicator();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +53,7 @@ class TweetState extends State<Tweet> {
 
   Future<dynamic> deletePost(String motivasiId) async {
     if (currentUser != widget.user) {
-      return showDialog<void>(
+      return await showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
@@ -82,7 +90,6 @@ class TweetState extends State<Tweet> {
           contentType: Headers.formUrlEncodedContentType,
         ),
       );
-      await getDataMotivasi();
       return response.data;
     } catch (e) {
       print('Error di -> $e');
@@ -110,50 +117,58 @@ class TweetState extends State<Tweet> {
         ),
       ],
       elevation: 8.0,
-    ).then(
-      (String? itemSelected) async {
-        if (itemSelected == "1") {
-          if (currentUser != widget.user) {
-            return await showDialog<void>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Terdapat Kesalahan'),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: const <Widget>[
-                        Text('Anda bukan pembuat motivasi ini.'),
-                      ],
-                    ),
+    ).then((String? itemSelected) async {
+      if (itemSelected == "1") {
+        if (currentUser != widget.user) {
+          return await showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Terdapat Kesalahan'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: const <Widget>[
+                      Text('Anda bukan pembuat motivasi ini.'),
+                    ],
                   ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('OK'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          }
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => EditPage(
-                userid: widget.user,
-                idMotivasi: widget.id,
-              ),
-            ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
           );
-        } else if (itemSelected == "2") {
-          return await deletePost(widget.id).then((value) => setState(() {}));
         }
-      },
-    );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => EditPage(
+              userid: widget.user,
+              idMotivasi: widget.id,
+            ),
+          ),
+        );
+      } else if (itemSelected == "2") {
+        await deletePost(widget.id).then((value) {
+          if (value != null) {
+            Flushbar(
+              message: 'Berhasil Dihapus',
+              duration: const Duration(seconds: 2),
+              backgroundColor: Colors.greenAccent,
+              flushbarPosition: FlushbarPosition.TOP,
+            ).show(context);
+          }
+        });
+        await getData();
+      }
+    });
   }
 
   Widget _tweetContent(String name, String id) {
@@ -171,7 +186,9 @@ class TweetState extends State<Tweet> {
                   child: Row(
                     children: [
                       Text(
-                        name,
+                        name.split(' ').length >= 3
+                            ? name.split(' ')[0] + name.split(' ')[2]
+                            : name,
                         style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
