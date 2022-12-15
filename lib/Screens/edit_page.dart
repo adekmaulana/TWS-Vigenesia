@@ -1,33 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:another_flushbar/flushbar.dart';
-import 'package:dio/dio.dart';
 import 'package:vigenesia/Constant/const.dart';
 
 class EditPage extends StatefulWidget {
   final String userid;
   final String idMotivasi;
+  final String text;
   const EditPage({
     Key? key,
     required this.userid,
     required this.idMotivasi,
+    required this.text,
   }) : super(key: key);
   @override
   EditPageState createState() => EditPageState();
 }
 
 class EditPageState extends State<EditPage> {
-  String baseurl = url;
   bool _visible = false;
   late String _motivasi;
   TextEditingController editController = TextEditingController();
-
-  Future<Widget> getData() async {
-    setState(() {
-      getDataMotivasi().then((_) => {});
-    });
-    return const CircularProgressIndicator();
-  }
 
   @override
   void dispose() {
@@ -38,11 +31,8 @@ class EditPageState extends State<EditPage> {
   Future<dynamic> editPost(String isiMotivasi, String ids) async {
     Map<String, dynamic> data = {'isi_motivasi': isiMotivasi, 'id': ids};
     var response = await dio.put(
-      '$baseurl/api/dev/PUTmotivasi',
+      '/dev/PUTmotivasi',
       data: data,
-      options: Options(
-        contentType: Headers.formUrlEncodedContentType,
-      ),
     );
     return response.data;
   }
@@ -83,10 +73,18 @@ class EditPageState extends State<EditPage> {
                       backgroundColor: Colors.greenAccent,
                       flushbarPosition: FlushbarPosition.TOP,
                     ).show(context)
-                  },
+                  }
+                else
+                  {
+                    Flushbar(
+                      message: 'Gagal Diubah',
+                      duration: const Duration(seconds: 2),
+                      backgroundColor: Colors.redAccent,
+                      flushbarPosition: FlushbarPosition.TOP,
+                    ).show(context)
+                  }
               },
             );
-            await getData();
           },
         ),
       ),
@@ -95,7 +93,8 @@ class EditPageState extends State<EditPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              TextField(
+              TextFormField(
+                initialValue: widget.text,
                 onChanged: (text) {
                   setState(
                     () {

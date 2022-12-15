@@ -93,25 +93,30 @@ class NavDrawer extends StatelessWidget {
               CupertinoIcons.person,
               size: 33.5,
             ),
-            title: Padding(
-              padding: EdgeInsets.only(
-                left: MediaQuery.of(context).size.width / 8.5,
-              ),
-              child: const Text(
-                'PROFILE',
-                style: TextStyle(fontSize: 16),
-              ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  'PROFILE',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  width: 55,
+                ),
+              ],
             ),
             onTap: () {
               SharedPreferences.getInstance().then(
                 (prefs) {
+                  var id = prefs.getString('id');
                   Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (BuildContext context) => Profile(
-                        id: prefs.getString('id')!,
+                        id: id!,
                         fromPage: "home",
+                        currentUser: id,
                       ),
                     ),
                   );

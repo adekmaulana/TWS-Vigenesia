@@ -1,9 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:vigenesia/Constant/const.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:dio/dio.dart';
 import 'main.dart';
 import 'registrasi.dart';
 import 'package:flutter/gestures.dart';
@@ -19,12 +19,13 @@ class Login extends StatefulWidget {
 class LoginState extends State<Login> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   Future postLogin(String email, String password) async {
-    String baseurl = url;
     Map<String, dynamic> data = {'email': email, 'password': password};
     try {
-      final response = await dio.post('$baseurl/api/login',
-          data: data,
-          options: Options(headers: {'content-Type': 'application/json'}));
+      final response = await dio.post(
+        '/login',
+        data: data,
+        options: Options(contentType: Headers.jsonContentType),
+      );
       print('Respon -> ${response.data} + ${response.statusCode}');
       if (response.statusCode == 200) {
         final loginModel = LoginModels.fromJson(response.data);

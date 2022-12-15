@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:another_flushbar/flushbar.dart';
-import 'package:dio/dio.dart';
 import 'package:vigenesia/Constant/const.dart';
 
 class AddPage extends StatefulWidget {
@@ -12,17 +11,9 @@ class AddPage extends StatefulWidget {
 }
 
 class AddPageState extends State<AddPage> {
-  String baseurl = url;
   bool _visible = false;
   late String _motivasi;
   TextEditingController motivasiController = TextEditingController();
-
-  Future<Widget> getData() async {
-    setState(() {
-      getDataMotivasi().then((_) => {});
-    });
-    return const CircularProgressIndicator();
-  }
 
   @override
   void dispose() {
@@ -34,11 +25,8 @@ class AddPageState extends State<AddPage> {
     dynamic body = {'isi_motivasi': motivasi, 'iduser': widget.userid};
     try {
       final response = await dio.post(
-        '$baseurl/api/dev/POSTmotivasi',
+        '/dev/POSTmotivasi',
         data: body,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        ),
       );
       return response;
     } catch (e) {
@@ -84,7 +72,16 @@ class AddPageState extends State<AddPage> {
                       backgroundColor: Colors.greenAccent,
                       flushbarPosition: FlushbarPosition.TOP,
                     ).show(context)
-                  },
+                  }
+                else
+                  {
+                    Flushbar(
+                      message: 'Gagal Submit',
+                      duration: const Duration(seconds: 2),
+                      backgroundColor: Colors.redAccent,
+                      flushbarPosition: FlushbarPosition.TOP,
+                    ).show(context)
+                  }
               },
             );
           },

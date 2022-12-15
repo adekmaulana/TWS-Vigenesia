@@ -2,11 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:vigenesia/Models/login_model.dart';
 import 'package:vigenesia/Models/motivasi_model.dart';
 
-String url = 'http://vigenesia.org/';
-final Dio dio = Dio();
+final Dio dio = Dio(
+  BaseOptions(
+    baseUrl: 'http://vigenesia.org/api',
+    contentType: Headers.formUrlEncodedContentType,
+  ),
+);
 
 Future<List<MotivasiModel>> getDataMotivasi() async {
-  var response = await dio.get('$url/api/get_motivasi');
+  var response = await dio.get('/get_motivasi');
   if (response.statusCode == 200) {
     var getUsersData = response.data as List;
     return getUsersData.map((i) => MotivasiModel.fromJson(i)).toList();
@@ -16,7 +20,7 @@ Future<List<MotivasiModel>> getDataMotivasi() async {
 }
 
 Future<List<MotivasiModel>> getDataMotivasiUser(String id) async {
-  var response = await dio.get('$url/api/get_motivasi?iduser=$id');
+  var response = await dio.get('/get_motivasi?iduser=$id');
   if (response.statusCode == 200) {
     var getUsersData = response.data as List;
     return getUsersData.map((i) => MotivasiModel.fromJson(i)).toList();
@@ -26,7 +30,7 @@ Future<List<MotivasiModel>> getDataMotivasiUser(String id) async {
 }
 
 Future<List<DataUser>> getDataUser(String id) async {
-  var response = await dio.get('$url/api/user?iduser=$id');
+  var response = await dio.get('/user?iduser=$id');
   if (response.statusCode == 200) {
     var getUsersData = response.data as List;
     return getUsersData.map((i) => DataUser.fromJson(i)).toList();

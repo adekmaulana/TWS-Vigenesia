@@ -1,5 +1,4 @@
 import 'package:another_flushbar/flushbar.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +13,7 @@ class Tweet extends StatefulWidget {
   final String text;
   final DateTime date;
   final String fromPage;
+  final Function refresher;
 
   const Tweet({
     Key? key,
@@ -22,6 +22,7 @@ class Tweet extends StatefulWidget {
     required this.text,
     required this.date,
     required this.fromPage,
+    required this.refresher,
   }) : super(key: key);
 
   @override
@@ -29,16 +30,7 @@ class Tweet extends StatefulWidget {
 }
 
 class TweetState extends State<Tweet> {
-  final String baseurl = url;
-
   late String? currentUser;
-
-  Future<Widget> getData() async {
-    setState(() {
-      getDataMotivasi().then((_) => {});
-    });
-    return const CircularProgressIndicator();
-  }
 
   @override
   void initState() {
@@ -84,11 +76,8 @@ class TweetState extends State<Tweet> {
     };
     try {
       final response = await dio.delete(
-        '$baseurl/api/dev/DELETEmotivasi',
+        '/dev/DELETEmotivasi',
         data: body,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        ),
       );
       return response.data;
     } catch (e) {
@@ -152,9 +141,10 @@ class TweetState extends State<Tweet> {
             builder: (BuildContext context) => EditPage(
               userid: widget.user,
               idMotivasi: widget.id,
+              text: widget.text,
             ),
           ),
-        );
+        ).then((value) => widget.refresher());
       } else if (itemSelected == "2") {
         await deletePost(widget.id).then((value) {
           if (value != null) {
@@ -164,9 +154,16 @@ class TweetState extends State<Tweet> {
               backgroundColor: Colors.greenAccent,
               flushbarPosition: FlushbarPosition.TOP,
             ).show(context);
+          } else {
+            Flushbar(
+              message: 'Gagal Dihapus',
+              duration: const Duration(seconds: 2),
+              backgroundColor: Colors.redAccent,
+              flushbarPosition: FlushbarPosition.TOP,
+            ).show(context);
           }
         });
-        await getData();
+        widget.refresher();
       }
     });
   }
@@ -204,13 +201,16 @@ class TweetState extends State<Tweet> {
                     ],
                   ),
                 ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    child: const Icon(Icons.more_horiz_rounded),
-                    onTapDown: (details) => showPopupMenu(context, details),
-                  ),
-                ),
+                widget.user == currentUser
+                    ? Container(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          child: const Icon(Icons.more_horiz_rounded),
+                          onTapDown: (details) =>
+                              showPopupMenu(context, details),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
               ],
             ),
             Container(
@@ -258,9 +258,10 @@ class TweetState extends State<Tweet> {
                               builder: (BuildContext context) => Profile(
                                 id: widget.user,
                                 fromPage: "home",
+                                currentUser: currentUser,
                               ),
                             ),
-                          ),
+                          ).then((value) => widget.refresher())
                         },
                     },
                     child: Text(

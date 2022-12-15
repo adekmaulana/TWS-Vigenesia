@@ -1,9 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:vigenesia/Constant/const.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:dio/dio.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -12,8 +12,6 @@ class Register extends StatefulWidget {
 }
 
 class RegisterState extends State<Register> {
-  String baseurl = url;
-
   Future postRegister(
       String nama, String profesi, String email, String password) async {
     dynamic data = {
@@ -23,9 +21,11 @@ class RegisterState extends State<Register> {
       'password': password
     };
     try {
-      final response = await dio.post('$baseurl/api/registrasi',
-          data: data,
-          options: Options(headers: {'content-Type': 'application/json'}));
+      final response = await dio.post(
+        '/registrasi',
+        data: data,
+        options: Options(contentType: Headers.jsonContentType),
+      );
       print('Respon -> ${response.data} + ${response.statusCode}');
       if (response.statusCode == 200) {
         return response.data;

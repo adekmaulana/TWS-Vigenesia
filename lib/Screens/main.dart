@@ -2,8 +2,9 @@ import 'package:flutter/services.dart';
 import 'package:vigenesia/Screens/add_page.dart';
 import 'package:flutter/material.dart';
 import 'package:vigenesia/Screens/drawer.dart';
-import 'package:vigenesia/Screens/home.dart';
 import 'package:vigenesia/Constant/const.dart';
+import 'package:vigenesia/Models/tweet.dart';
+import 'package:vigenesia/Models/motivasi_model.dart';
 
 class MainScreens extends StatefulWidget {
   final String idUser;
@@ -15,15 +16,21 @@ class MainScreens extends StatefulWidget {
 }
 
 class MainScreensState extends State<MainScreens> {
-  String baseurl = url;
   late String id;
   TextEditingController titleController = TextEditingController();
 
-  Future<Widget> getData() async {
-    setState(() {
-      getDataMotivasi().then((_) => {});
-    });
-    return const CircularProgressIndicator();
+  void _refresh() {
+    setState(
+      () {
+        getDataMotivasi().then(
+          (_) async => {
+            await Future.delayed(
+              const Duration(milliseconds: 100),
+            )
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -31,7 +38,7 @@ class MainScreensState extends State<MainScreens> {
     super.initState();
     getDataMotivasiUser(widget.idUser);
     getDataMotivasi();
-    getData();
+    _refresh();
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -77,7 +84,45 @@ class MainScreensState extends State<MainScreens> {
       ),
       body: Stack(
         children: [
-          const Home(),
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 19.0, right: 19.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  FutureBuilder(
+                    future: getDataMotivasi(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<MotivasiModel>> snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            for (var item in snapshot.data!)
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: Tweet(
+                                  id: item.id,
+                                  user: item.idUser,
+                                  text: item.isiMotivasi,
+                                  date: item.tanggalInput,
+                                  fromPage: "home",
+                                  refresher: _refresh,
+                                ),
+                              ),
+                          ],
+                        );
+                      } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                        return const Text('No Data');
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -92,10 +137,7 @@ class MainScreensState extends State<MainScreens> {
                       builder: (BuildContext context) =>
                           AddPage(userid: widget.idUser),
                     ),
-                  );
-                  setState(() {
-                    getDataMotivasi().then((value) => {});
-                  });
+                  ).then((value) => _refresh());
                 },
               ),
             ),

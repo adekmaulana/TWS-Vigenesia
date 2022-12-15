@@ -9,18 +9,46 @@ import 'package:vigenesia/Screens/add_page.dart';
 class Profile extends StatefulWidget {
   final String id;
   final String fromPage;
+  final String? currentUser;
 
   const Profile({
     Key? key,
     required this.id,
     required this.fromPage,
+    required this.currentUser,
   }) : super(key: key);
   @override
   ProfileState createState() => ProfileState();
 }
 
 class ProfileState extends State<Profile> {
-  final String baseurl = url;
+  void _refresh() {
+    setState(
+      () {
+        getDataMotivasiUser(widget.id).then(
+          (_) async => {
+            await Future.delayed(
+              const Duration(milliseconds: 500),
+            )
+          },
+        );
+      },
+    );
+  }
+
+  void _refreshMain() {
+    setState(
+      () {
+        getDataMotivasi().then(
+          (_) async => {
+            await Future.delayed(
+              const Duration(milliseconds: 500),
+            )
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,19 +186,21 @@ class ProfileState extends State<Profile> {
                       right: 21.0,
                       top: MediaQuery.of(context).size.width / 2.5,
                     ),
-                    child: FloatingActionButton(
-                      tooltip: 'Tambah Motivasi',
-                      child: const Icon(Icons.add),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                AddPage(userid: widget.id),
-                          ),
-                        );
-                      },
-                    ),
+                    child: widget.id == widget.currentUser
+                        ? FloatingActionButton(
+                            tooltip: 'Tambah Motivasi',
+                            child: const Icon(Icons.add),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      AddPage(userid: widget.id),
+                                ),
+                              ).then((value) => _refresh());
+                            },
+                          )
+                        : const SizedBox.shrink(),
                   ),
                 ),
               ],
@@ -197,6 +227,7 @@ class ProfileState extends State<Profile> {
                               text: item.isiMotivasi,
                               date: item.tanggalInput,
                               fromPage: "profile",
+                              refresher: _refresh,
                             ),
                           ),
                       ],
