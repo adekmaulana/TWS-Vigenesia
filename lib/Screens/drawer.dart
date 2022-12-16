@@ -6,12 +6,14 @@ import 'package:vigenesia/Screens/profile.dart';
 import 'login.dart';
 
 class NavDrawer extends StatelessWidget {
-  final String displayName;
-  final String fullName;
+  final String nick;
+  final String name;
+  final Function refresher;
   const NavDrawer({
     Key? key,
-    required this.displayName,
-    required this.fullName,
+    required this.nick,
+    required this.name,
+    required this.refresher,
   }) : super(key: key);
 
   @override
@@ -36,7 +38,7 @@ class NavDrawer extends StatelessWidget {
                   child: SizedBox(
                     child: CircleAvatar(
                       radius: 19.0,
-                      child: Text(displayName),
+                      child: Text(nick),
                     ),
                   ),
                 ),
@@ -45,7 +47,7 @@ class NavDrawer extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.5),
                     child: Text(
-                      fullName,
+                      name,
                       style:
                           const TextStyle(color: Colors.black, fontSize: 19.0),
                     ),
@@ -119,7 +121,7 @@ class NavDrawer extends StatelessWidget {
                         currentUser: id,
                       ),
                     ),
-                  );
+                  ).then((value) => refresher());
                 },
               );
             },

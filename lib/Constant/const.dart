@@ -20,7 +20,11 @@ Future<List<MotivasiModel>> getDataMotivasi() async {
 }
 
 Future<List<MotivasiModel>> getDataMotivasiUser(String id) async {
-  var response = await dio.get('/get_motivasi?iduser=$id');
+  var response = await dio.get(
+    '/get_motivasi',
+    queryParameters: {'iduser': id},
+    options: Options(contentType: Headers.jsonContentType),
+  );
   if (response.statusCode == 200) {
     var getUsersData = response.data as List;
     return getUsersData.map((i) => MotivasiModel.fromJson(i)).toList();
@@ -30,7 +34,11 @@ Future<List<MotivasiModel>> getDataMotivasiUser(String id) async {
 }
 
 Future<List<DataUser>> getDataUser(String id) async {
-  var response = await dio.get('/user?iduser=$id');
+  var response = await dio.get(
+    '/user',
+    queryParameters: {'iduser': id},
+    options: Options(contentType: Headers.jsonContentType),
+  );
   if (response.statusCode == 200) {
     var getUsersData = response.data as List;
     return getUsersData.map((i) => DataUser.fromJson(i)).toList();

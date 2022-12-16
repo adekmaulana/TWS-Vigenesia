@@ -53,8 +53,9 @@ class MainScreensState extends State<MainScreens> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavDrawer(
-        displayName: displayName,
-        fullName: widget.nama,
+        nick: displayName,
+        name: firstName,
+        refresher: _refresh,
       ),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -115,7 +116,7 @@ class MainScreensState extends State<MainScreens> {
                       } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                         return const Text('No Data');
                       } else {
-                        return const Center(child: CircularProgressIndicator());
+                        return const SizedBox.shrink();
                       }
                     },
                   ),
